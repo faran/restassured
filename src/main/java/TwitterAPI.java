@@ -1,20 +1,11 @@
 import io.restassured.RestAssured;
 import io.restassured.authentication.OAuthSignature;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import resources.HelperUtils;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-
 import static io.restassured.RestAssured.given;
-import static resources.HelperUtils.rawToJson;
+import static resources.HelperUtils.getConfigValue;
 
 public class TwitterAPI {
 
@@ -23,19 +14,12 @@ public class TwitterAPI {
     private final String Token = "21671123-P0W8iS0bylU3RifoHEbuRKWf00OBnrR1Jb4J78im9";
     private final String TokenSecret = "2cvBl9XspyV3lZVBROaVKy4hSp2oxtHRuyGpZyBgxS3Ua";
 
-
-    Properties prop = new Properties();
-    @BeforeTest
-    public void beforeTest() throws IOException {
-
-        FileInputStream fis = new FileInputStream("/Users/fkha0003/Downloads/graphwalker-example/restassured/src/main/resources/env.properties");
-        prop.load(fis);
-    }
+    private final String baseURI = getConfigValue("/env.properties","TWITTERHOST");
 
     //@Test
     public void getLatestTweets(){
 
-        RestAssured.baseURI = prop.getProperty("TWITTERHOST");
+        RestAssured.baseURI = baseURI;
         Response response = given().auth().oauth(ConsumerKey, ConsumerSecret, Token, TokenSecret, OAuthSignature.HEADER).
 
                 queryParam("count", 1)
@@ -51,7 +35,7 @@ public class TwitterAPI {
     //@Test
     public void createTweet(){
 
-        RestAssured.baseURI = prop.getProperty("TWITTERHOST");
+        RestAssured.baseURI = baseURI;
         Response response = given().auth().oauth(ConsumerKey, ConsumerSecret, Token, TokenSecret, OAuthSignature.HEADER).
 
                 queryParam("status", "Tweet from Rest Assured 2")
@@ -65,7 +49,7 @@ public class TwitterAPI {
     //@Test
     public void deleteTweet(){
 
-        RestAssured.baseURI = prop.getProperty("TWITTERHOST");
+        RestAssured.baseURI = baseURI;
         Response response = given().auth().oauth(ConsumerKey, ConsumerSecret, Token, TokenSecret, OAuthSignature.HEADER).
 
                 when().post("/destroy/1097896113867317249.json").then().extract().response();
@@ -78,7 +62,7 @@ public class TwitterAPI {
     @Test
     public void getMyLatestTweets(){
 
-        RestAssured.baseURI = prop.getProperty("TWITTERHOST");
+        RestAssured.baseURI = baseURI;
         Response response = given().auth().oauth(ConsumerKey, ConsumerSecret, Token, TokenSecret, OAuthSignature.HEADER).
 
                 queryParam("screen_name", "faaran").queryParam("count", 2)

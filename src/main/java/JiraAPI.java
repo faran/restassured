@@ -1,32 +1,23 @@
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import resources.HelperUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
+import static resources.HelperUtils.getConfigValue;
 import static resources.HelperUtils.getJiraSessionID;
 import static resources.PayLoad.*;
 import static resources.Resources.*;
 
 public class JiraAPI {
-
-    Properties prop = new Properties();
-    @BeforeTest
-    public void beforeTest() throws IOException {
-
-        FileInputStream fis = new FileInputStream("/Users/fkha0003/Downloads/graphwalker-example/restassured/src/main/resources/env.properties");
-        prop.load(fis);
-    }
+    String baseURI = getConfigValue("/env.properties","JIRAHOST");
 
     //@Test
     public void JiraApiCreateIssue() throws IOException {
-    RestAssured.baseURI = prop.getProperty("JIRAHOST");
+    RestAssured.baseURI = baseURI;
 
     Response response = given().header("Content-Type", "application/json").
             header("Cookie", "JSESSIONID="+getJiraSessionID()).
@@ -44,7 +35,7 @@ public class JiraAPI {
 
    //@Test
     public void JiraApiAddComment() throws IOException {
-        RestAssured.baseURI = prop.getProperty("JIRAHOST");
+        RestAssured.baseURI = baseURI;
 
         Response response = given().header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID="+getJiraSessionID()).
@@ -62,7 +53,7 @@ public class JiraAPI {
 
     @Test
     public void JiraApiUpdateComment() throws IOException {
-        RestAssured.baseURI = prop.getProperty("JIRAHOST");
+        RestAssured.baseURI = baseURI;
 
         Response response = given().header("Content-Type", "application/json").
                 header("Cookie", "JSESSIONID="+getJiraSessionID()).

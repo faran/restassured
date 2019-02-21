@@ -2,37 +2,34 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
 import resources.HelperUtils;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static resources.HelperUtils.getConfigValue;
 import static resources.PayLoad.bodyPost;
 import static resources.Resources.RES_ADD;
 import static resources.Resources.RES_DELETE;
 
 public class ExtractResponseWithJson {
 
+    private static Logger logger = LogManager.getLogger(ExtractResponseWithJson.class.getName());
 
     @Test
-    public void BasicsTestRestAssured() throws IOException {
-        Properties prop = new Properties();
-        FileInputStream fis = new FileInputStream("/Users/fkha0003/Downloads/graphwalker-example/restassured/src/main/resources/env.properties");
-        prop.load(fis);
-        String baseURI = prop.getProperty("HOST");
-        String key = prop.getProperty("KEY");
-        System.out.println(baseURI);
+    public void BasicsTestRestAssured() {
+
+        String baseURI = getConfigValue("/env.properties","HOST");
+        String key = getConfigValue("/env.properties","KEY");
 
         RestAssured.baseURI = baseURI;
-
+        logger.info("Host Information :" + baseURI);
         Response res = given().
                 queryParam("key", key).
                 body(bodyPost).
-
                 when().
                 post(RES_ADD).
                 then().
@@ -43,7 +40,7 @@ public class ExtractResponseWithJson {
         //GRAB place id FROM RESPONSE
         JsonPath jsonPath = HelperUtils.rawToJson(res);
         String placeId = jsonPath.get("place_id");
-        System.out.println(placeId);
+        logger.info("Place Id: " + placeId);
 
         //DELETE POST
         given().

@@ -3,31 +3,20 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import resources.HelperUtils;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static resources.HelperUtils.getConfigValue;
 
 public class Get {
-    Properties prop = new Properties();
-
-    @BeforeTest
-    public void beforeTest() throws IOException {
-
-        FileInputStream fis = new FileInputStream("/Users/fkha0003/Downloads/graphwalker-example/restassured/src/main/resources/env.properties");
-        prop.load(fis);
-    }
 
     @Test
     public void BasicTestRestAssured(){
 
-        RestAssured.baseURI = prop.getProperty("HOST");
+        String baseURI = getConfigValue("/env.properties","HOST");
+        RestAssured.baseURI = baseURI;
         Response response = given().
                 param("AuthorName","Rahul").
         when().

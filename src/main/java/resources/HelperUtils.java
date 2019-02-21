@@ -5,9 +5,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -17,17 +15,6 @@ import static resources.PayLoad.jiraSessionPost;
 import static resources.Resources.JIRA_SESSION;
 
 public class HelperUtils {
-
-    static Properties prop = new Properties();
-    static FileInputStream fis;
-
-    {
-        try {
-            fis = new FileInputStream("/Users/fkha0003/Downloads/graphwalker-example/restassured/src/main/resources/env.properties");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static XmlPath rawToXml(Response r){
         String response = r.asString();
@@ -57,5 +44,21 @@ public class HelperUtils {
         System.out.println(svalue);
 
         return svalue;
+    }
+
+    public static String getConfigValue(String fileName, String key) {
+        File resourceDirectory = new File("src/main/resources");
+        Properties prop = new Properties();
+        String value = null;
+        try {
+            InputStream input = new FileInputStream(resourceDirectory.getPath()+fileName);
+            prop.load(input);
+            value = prop.getProperty(key);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return value;
     }
 }

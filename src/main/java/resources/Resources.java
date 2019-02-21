@@ -18,6 +18,4 @@ public final class Resources {
                 String resource = "rest/api/2/issue/" + key + "/comment/"+issue;
                 return resource;
         }
-
-        public final static String T_STATUSES = "/1.1/statuses";
 }
